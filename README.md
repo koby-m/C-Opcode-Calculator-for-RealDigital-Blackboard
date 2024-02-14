@@ -19,5 +19,7 @@ Description:
                         four digit limitation. This warning triggers when a negative number is produced also.
 
 Dependancies[2]:           
+                        klib_io (written in C)
                         https://github.com/koby-m/klib_io---C-for-RealDigital-Blackboard
+                        klib_pfrl (written in C)
                         https://github.com/koby-m/klib_prfl---C-for-RealDigital-Blackboard
