@@ -18,6 +18,6 @@ Description:
                         four LEDs will come on to alert that the number is not displayed correctly on the seven-segment due to the
                         four digit limitation. This warning triggers when a negative number is produced also.
 
-Dependancies:           
+Dependancies[2]:           
                         https://github.com/koby-m/klib_io---C-for-RealDigital-Blackboard
                         https://github.com/koby-m/klib_prfl---C-for-RealDigital-Blackboard
