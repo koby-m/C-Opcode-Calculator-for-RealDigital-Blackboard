@@ -201,7 +201,7 @@ int waitForKey() {
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ */
 void performOp(unsigned int* sol, unsigned int op1, unsigned int op2, unsigned int* store, bool mode) {
     
-    unsigned int c; // iterator, only used for counting leading zeroes operation
+    byte c; // iterator, only used for counting leading zeroes operation
 
     // determine operation from switches
     // unlabeled functions are straightforward
