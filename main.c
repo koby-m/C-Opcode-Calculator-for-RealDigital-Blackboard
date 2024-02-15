@@ -4,7 +4,7 @@
 
         Contributor(s):         Koby Miller
 
-        Date last modified:     February 13th, 2024
+        Date last modified:     February 15th, 2024
 
         Description:            An extremely basic calculator. On-board switches are used to determine operation to perform.
                                 The four right-most switches are used to input 4-bit ARM Assembly op-codes. 
@@ -65,23 +65,29 @@ void getInput(unsigned int* val, bool mode);
 /* +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
   
         MAIN
-        Last modified: February 13th, 2024
+        Last modified: February 15th, 2024
 
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ */
 int main() {
     
     int op[4] = {0,0,0,0}; // {Solution, Operand1, Operand2, Store} respectively
-    bool mode = 0; // used to determine what mode of operation (hexadecimal or deciamal)
+    byte mode = 0; // used to determine what mode of operation (hexadecimal or decimal)
 
-    outputToSevSegCustom("----"); 
+    outputToSevSegCustom("TYPE"); // initial power on
 
     while(true) { 
 
-        mode = bitIndex(getSwitchStates(),11); // set mode of operation (hexadecimal or deciamal) from twelfth switch
+        while(getButtonStates() == 0) { // wait until button press
+            mode = bitIndex(getSwitchStates(),11); // set mode of operation (hexadecimal or decimal) from twelfth switch
+            if(bitIndex(getSwitchStates(), 10) == 1) mode = 2; // override if in binary mode (thirteenth switch)
+        }
+
+        outputToSevSegCustom("____"); 
+        outputToLEDs(0); // clear previous warning
+
+        while(getButtonStates() != 0); // wait until button release
 
         getInput(&op[1],mode); // get first operand from keypad
-
-        outputToLEDs(0); // clear previous warning
 
         getInput(&op[2],mode); // get second operand from keypad
 
@@ -116,17 +122,25 @@ void getInput(unsigned int* val, bool mode) {
     *val = 0; // ensure value passed is empty
 
     while(true) {
+
         key = waitForKey(); // wait for a key, then store it
         
         if(key != -1) { // if keypad is not skipped over by pushbuttons
         
             // shift over and add digits
-            if(mode == 1) { // decimal mode
-                *val *= 10; 
-                *val %= 10000;
-            } else { // hexadecimal mode
-                *val *= 0x10;
-                *val %= 0x10000;
+            switch(mode) {
+                case 0:  // hexadecimal mode
+                    *val *= 0x10;
+                    *val %= 0x10000;
+                    break;
+                case 1: // decimal mode
+                    *val *= 10; 
+                    *val %= 10000;
+                    break;
+                case 2: // binary mode
+                    *val *= 0b10; 
+                    *val %= 0b10000;
+                    break;
             }
 
             *val += key;
@@ -160,6 +174,7 @@ int waitForKey() {
 
     while(getKeypad() == -1 && getButtonStates() == 0) { // wait until pushed
         usleep(10000); // slight delay
+        outputToLEDs(getSwitchStates()&0b1111); // display operation on LEDs
     }
 
     val = getKeypad(); // set return value based on keypad button
@@ -279,10 +294,16 @@ void performOp(unsigned int* sol, unsigned int op1, unsigned int op2, unsigned i
     }
 
     // warn if over max number able to be displayed 
-    if(mode == 1) { // decimal mode
-        if(*sol > 9999) outputToLEDs(0b1111);
-    } else { // hexadecimal mode
-        if(*sol > 0xFFFF) outputToLEDs(0b1111);
+    switch(mode) {
+        case 0: // hexadecimal mode
+            if(*sol > 0xFFFF) outputToLEDs(0b111111111);
+            break;
+        case 1: // decimal mode
+            if(*sol > 9999) outputToLEDs(0b111111111);
+            break;
+        case 2: // binary mode
+            if(*sol > 0b1111) outputToLEDs(0b111111111);
+            break;
     }
     
     outputToSevSeg(*sol, mode);
