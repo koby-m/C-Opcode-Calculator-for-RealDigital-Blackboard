@@ -1,6 +1,12 @@
 **Program Name:**           
 Keypad Op-Code Calculator
 
+**Dependancies[2]:**           
+klib_io (written in C)<br>
+https://github.com/koby-m/klib_io---C-for-RealDigital-Blackboard<br>
+klib_pfrl (written in C)<br>
+https://github.com/koby-m/klib_prfl---C-for-RealDigital-Blackboard<br>
+
 **Contributor(s):**         
 Koby Miller
 
@@ -17,9 +23,3 @@ the next operand, then the solution based on the operation.
 Should the solution of an operation exceed what is able to be displayed on the seven-segment display, 
 four LEDs will come on to alert that the number is not displayed correctly on the seven-segment due to the
 four digit limitation. This warning triggers when a negative number is produced also.
-
-**Dependancies[2]:**           
-klib_io (written in C)<br>
-https://github.com/koby-m/klib_io---C-for-RealDigital-Blackboard<br>
-klib_pfrl (written in C)<br>
-https://github.com/koby-m/klib_prfl---C-for-RealDigital-Blackboard<br>
